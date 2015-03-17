@@ -98,6 +98,8 @@ public class ImageJ extends Frame implements ActionListener,
 	private static final String IJ_X="ij.x",IJ_Y="ij.y";
 	private static int port = DEFAULT_PORT;
 	private static String[] arguments;
+        
+        public static String myijpath="-ijpath /usr/local/ImageJ/plugins";
 	
 	private Toolbar toolbar;
 	private Panel statusBar;
@@ -722,7 +724,11 @@ public class ImageJ extends Frame implements ActionListener,
 	}
 	
 	/** Returns the command line arguments passed to ImageJ. */
-	public static String[] getArgs() {
+	//public static String[] getArgs(String myijpath) {
+	//	return arguments;
+	//}
+        
+        public static String[] getArgs(String myijpath) {
 		return arguments;
 	}
 
