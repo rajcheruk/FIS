@@ -640,7 +640,8 @@ public class ImageJ extends Frame implements ActionListener,
 		}
 		boolean noGUI = false;
 		int mode = EMBEDDED;
-		arguments = args;
+                arguments = args;
+		//arguments = args;
 		//System.setProperty("file.encoding", "UTF-8");
 		int nArgs = args!=null?args.length:0;
 		boolean commandLine = false;
@@ -674,7 +675,7 @@ public class ImageJ extends Frame implements ActionListener,
   			return;
  		ImageJ ij = IJ.getInstance();    	
 		if (!noGUI && (ij==null || (ij!=null && !ij.isShowing()))) {
-			ij = new ImageJ(null, mode);
+			ij = new ImageJ(null, EMBEDDED);
 			ij.exitWhenQuitting = true;
 		}
 		int macros = 0;

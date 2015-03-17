@@ -1,10 +1,12 @@
 package ij;
 
+import ij.ImageJ;
 import ij.IJ;
 import ij.process.ByteProcessor;
 import static ij.IJ.beep;
 import static ij.IJ.escapePressed;
 import static ij.IJ.getInstance;
+import ij.OtherInstance.ImageJInstance;
 import static ij.IJ.outOfMemory;
 import static ij.IJ.resetEscape;
 import static ij.IJ.showStatus;
@@ -54,6 +56,7 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
 	private Panel panel;
 	private int previousID;
         
+        public ImageJ FISImageJ=null;
         public CannyEdgeDetector temp = null;
         public CannyEdgeDetector.Parameters tempParams = new CannyEdgeDetector.Parameters();
         public ByteProcessor edgeImg;
@@ -109,7 +112,6 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
 
         @Override
 	public void actionPerformed(ActionEvent e) {
-            
                 ImageJ instance1 = ij.IJ.getInstance();
 		ImagePlus imp = WindowManager.getCurrentImage();
 
