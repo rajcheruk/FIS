@@ -84,14 +84,13 @@ public class FISPrototypeUI {
                 private static final int DEFAULT_WIDTH = 512;
                 private static final int DEFAULT_HEIGHT = 512;
                 
+                public String myijpath="-ijpath /usr/local/ImageJ/plugins";
+                
                 public BufferedImage bufferedImage = null;
                 
                 public ij.IP_Demo CustomCommands = null;
                 
-                //public FISPrototype.DemoRegionsAndContours RegionContourLabel = null;
-                //public ByteProcessor FISIP = null;
-                
-                public ImageJ FISImageJ = null;
+                public ImageJ FISImageJ=null;
                 public laplacian_Gaussian LaplacianGaussian = null;
                 
                 // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
@@ -134,6 +133,7 @@ public class FISPrototypeUI {
                 private JMenu ReportsMnu;
                
                 FISAuthenticate() {
+                    this.FISImageJ = null;
                     initAuthComponents();
                 }
 
@@ -241,11 +241,10 @@ public class FISPrototypeUI {
                             void submitActionPerformed(ActionEvent e) {
                                 String FISuser = usernametxt.getText();
                                 String FISpwd = new String(passwordtxt.getPassword());
-                                if (FISuser.equals("admin") && FISpwd.equals("admin")) {  
-                                    
-                                    //desktop.add(ImageFISFrame);
-                                    CustomCommands = new IP_Demo();
+                                if (FISuser.equals("admin") && FISpwd.equals("admin")) {
                                     FISImageJ = new ImageJ();
+                                    CustomCommands = new IP_Demo();
+
                                     //ImageFISFrame.pack();                    
                                     //ImageFISFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
                                     //ImageFISFrame.setFont(new Font("Franklin Gothic Medium", Font.BOLD, 14));
