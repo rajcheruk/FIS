@@ -73,10 +73,10 @@ public class FISPrototypeUI {
                 Frame.setLocation(450, 100);
                 Frame.setVisible(true);
                 
-                command = args[0];
-                commandargs1 = args[1];
-                commandargs2 = args[2];
-                imagejapp = command + " " + commandargs1 + " " + commandargs2;
+                //command = args[0];
+                //commandargs1 = args[1];
+                //commandargs2 = args[2];
+                //imagejapp = command + " " + commandargs1 + " " + commandargs2;
             }
 
             final class FISAuthenticate extends JFrame {
@@ -243,13 +243,13 @@ public class FISPrototypeUI {
                                 String FISuser = usernametxt.getText();
                                 String FISpwd = new String(passwordtxt.getPassword());
                                 if (FISuser.equals("admin") && FISpwd.equals("admin")) {
-                                    try {
-                                            Process pr = Runtime.getRuntime().exec(imagejapp);
-                                        } catch (IOException ex) {
-                                            System.err.println("ImageJ Exception:" + ex);
-                                        }
+                                    //try {
+                                    //        Process pr = Runtime.getRuntime().exec(imagejapp);
+                                    //    } catch (IOException ex) {
+                                    //        System.err.println("ImageJ Exception:" + ex);
+                                    //    }
                                     
-                                    //FISImageJ = new ImageJ(256);
+                                    FISImageJ = new ImageJ();
                                     CustomCommands = new IP_Demo();
 
                                     //ImageFISFrame.pack();                    
