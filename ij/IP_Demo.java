@@ -69,7 +69,7 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
         
         public final String appname="/usr/local/ImageJ/ImageJ";
         public final String filename="/home/raj/evolution_research/Images/waxlake_2014298_lrg_bw.jpg";
-        public final String commandName="laplacian GaussianImpl";
+        //public String commandName;
         public String runtimeCmd;
         
         public IP_Demo() {
@@ -118,7 +118,7 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
 
         @Override
 	public void actionPerformed(ActionEvent e) {
-                //FISImageJ = new ImageJ();
+                FISImageJ = new ImageJ();
                 IJ.open();
                 ImageJ instance1 = ij.IJ.getInstance();
 		ImagePlus imp = WindowManager.getCurrentImage();
@@ -302,7 +302,6 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                  
 		void runCommand(String command, ImagePlus imp) {
                     
-                        runtimeCmd= appname + " " + filename + " " + commandName;
 			ImageProcessor ip = imp.getProcessor();
                         ImageCanvas ic = imp.getCanvas();
 
@@ -356,7 +355,16 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                 case "Laplacian Gaussian":
                     try
                     {
-                    System.out.println("RuntimeCmd   " + runtimeCmd);
+                    String commandName="laplacian";
+                    String commandName1="GaussianImpl";
+                    String cmd=commandName + " " + commandName1;
+                    String commandName2="-ijpath";
+                    String commandName3="/usr/local/ImageJ/Plugins";
+                    //String Command=commandName + " " + commandName1;
+                    
+                    runtimeCmd=appname + " " + commandName2 + " " + commandName3 + " " + filename + " " + "-run" + " "  + "\"" + cmd + "\"";
+                    //runtimeCmd=appname + " " + commandName2 + " " + commandName3 + " " + filename + " " + "-run" + " "  + "crop";
+                    System.out.println(runtimeCmd);
                     Process pr = Runtime.getRuntime().exec(runtimeCmd);
                     } catch (IOException err) {
                         System.err.println("Caught Exception from routine Laplacian Guassian" + err);
@@ -366,19 +374,40 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                     //ij.IJ.runPlugIn("laplacian_GaussianImpl", "");                    
                     break;
                 case "Wavelets Image Pyramids":
-                    IJ.run("Image Pyramid");
+                    try {
+                    String commandName="Image" + " " + "Pyramid";
+                    runtimeCmd=appname + " " + filename + " " + "-run" + " " + commandName;
+                    Process pr = Runtime.getRuntime().exec(runtimeCmd);
+                    } catch (IOException err) {
+                        System.err.println("Caught Exception from routine Laplacian Guassian" + err);
+                    }
+                    //IJ.run("Image Pyramid");
                     //ij.IJ.runPlugIn("Image_Pyramid", "");
                     ij.IJ.showProgress(1.0);
                     ij.IJ.showMessage("Finished.", "Thank you for running Image Pyramid");
                     break;
                 case "Region Labeling":
+                    try {
+                    String commandName="Demo" + " " + "RegionLabeling";
+                    runtimeCmd=appname + " " + filename + " " + "-run" + " " + commandName;
+                    Process pr = Runtime.getRuntime().exec(runtimeCmd);
+                    } catch (IOException err) {
+                        System.err.println("Caught Exception from routine Laplacian Guassian" + err);
+                    }
                     imp.unlock();
-                    IJ.run("Demo RegionLabeling");
+                    //IJ.run("Demo RegionLabeling");
                     //ij.IJ.runPlugIn("Demo_RegionLabeling", "");
                     ij.IJ.showProgress(1.0);
                     ij.IJ.showMessage("Completed.", "Thank you for running Region Labeling");
                     break;
                 case "Region Contouring":
+                    try {
+                    String commandName="Demo" + " " + "RegionsAndContours";
+                    runtimeCmd=appname + " " + filename + " " + "-run" + " " + commandName;
+                    Process pr = Runtime.getRuntime().exec(runtimeCmd);
+                    } catch (IOException err) {
+                        System.err.println("Caught Exception from routine Laplacian Guassian" + err);
+                    }
                     imp.unlock();
                     IJ.run("Demo RegionsAndContours");
                     //ij.IJ.runPlugIn("Demo_RegionsAndContours", "");
