@@ -1,7 +1,9 @@
 package ij;
 
+import ij.*;
 import ij.ImageJ;
 import ij.IJ;
+import ij.process.*;
 import ij.process.ByteProcessor;
 import static ij.IJ.beep;
 import static ij.IJ.escapePressed;
@@ -30,12 +32,14 @@ import static java.lang.Math.max;
 import static java.lang.System.currentTimeMillis;
 import java.util.concurrent.ExecutorService;
 import java.io.IOException;
+import ij.plugin.*;
 
 import fisprototype.CannyEdgeDetector;
 import fisprototype.GaussianScaleSpace;
 import fisprototype.HierarchicalScaleSpace;
 import ij.process.FloatProcessor;
 import fisprototype.Demo_RegionLabeling;
+import ij.Laplacian_Plugin;
 
 
 
@@ -58,6 +62,7 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
 	private int previousID;
         
         public ImageJ FISImageJ=null;
+        public Laplacian_Plugin LOGPlug=null;
         public CannyEdgeDetector temp = null;
         public CannyEdgeDetector.Parameters tempParams = new CannyEdgeDetector.Parameters();
         public ByteProcessor edgeImg;
@@ -118,11 +123,11 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
 
         @Override
 	public void actionPerformed(ActionEvent e) {
-                FISImageJ = new ImageJ();
-                IJ.open();
+                //FISImageJ = new ImageJ();
+                //IJ.open();
                 ImageJ instance1 = ij.IJ.getInstance();
 		ImagePlus imp = WindowManager.getCurrentImage();
-                imp.show();
+                //imp.show();
 
                 if (imp == null) {
 			beep();
@@ -353,66 +358,61 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                     }
                     break;
                 case "Laplacian Gaussian":
-                    try
-                    {
                     String commandName="laplacian";
                     String commandName1="GaussianImpl";
                     String cmd=commandName + " " + commandName1;
                     String commandName2="-ijpath";
                     String commandName3="/usr/local/ImageJ/Plugins";
                     //String Command=commandName + " " + commandName1;
-                    
-                    runtimeCmd=appname + " " + commandName2 + " " + commandName3 + " " + filename + " " + "-run" + " "  + "\"" + cmd + "\"";
+                    //runtimeCmd=appname + " " + commandName2 + " " + commandName3 + " " + filename + " " + "-run" + " "  + "\"" + cmd + "\"";
                     //runtimeCmd=appname + " " + commandName2 + " " + commandName3 + " " + filename + " " + "-run" + " "  + "crop";
-                    System.out.println(runtimeCmd);
-                    Process pr = Runtime.getRuntime().exec(runtimeCmd);
-                    } catch (IOException err) {
-                        System.err.println("Caught Exception from routine Laplacian Guassian" + err);
-                    }
-                    //IJ.run("laplacian GaussianImpl");
+                    //System.out.println(runtimeCmd);
+                    //Process pr = Runtime.getRuntime().exec(runtimeCmd);
+                    //IJ.run(imp, "laplacian GaussianImpl", "");
                     //IJ.runUserPlugIn("laplacian GaussianImpl", "laplacian_GaussianImpl", "", true);
-                    //ij.IJ.runPlugIn("laplacian_GaussianImpl", "");                    
+                    ij.IJ.runPlugIn("laplacian_GaussianImpl", "");   
+                    //new Laplacian_Plugin().run("");
                     break;
                 case "Wavelets Image Pyramids":
-                    try {
-                    String commandName="Image" + " " + "Pyramid";
-                    runtimeCmd=appname + " " + filename + " " + "-run" + " " + commandName;
-                    Process pr = Runtime.getRuntime().exec(runtimeCmd);
-                    } catch (IOException err) {
-                        System.err.println("Caught Exception from routine Laplacian Guassian" + err);
-                    }
+                    //try {
+                    //String commandName5="Image" + " " + "Pyramid";
+                    //runtimeCmd=appname + " " + filename + " " + "-run" + " " + commandName5;
+                    //Process pr = Runtime.getRuntime().exec(runtimeCmd);
+                    //} catch (IOException err) {
+                    //    System.err.println("Caught Exception from routine Laplacian Guassian" + err);
+                    //}
                     //IJ.run("Image Pyramid");
-                    //ij.IJ.runPlugIn("Image_Pyramid", "");
-                    ij.IJ.showProgress(1.0);
-                    ij.IJ.showMessage("Finished.", "Thank you for running Image Pyramid");
+                    ij.IJ.runPlugIn("Image_Pyramid", "");
+                    //ij.IJ.showProgress(1.0);
+                    //ij.IJ.showMessage("Finished.", "Thank you for running Image Pyramid");
                     break;
                 case "Region Labeling":
-                    try {
-                    String commandName="Demo" + " " + "RegionLabeling";
-                    runtimeCmd=appname + " " + filename + " " + "-run" + " " + commandName;
-                    Process pr = Runtime.getRuntime().exec(runtimeCmd);
-                    } catch (IOException err) {
-                        System.err.println("Caught Exception from routine Laplacian Guassian" + err);
-                    }
-                    imp.unlock();
+                    //try {
+                    //String commandName6="Demo" + " " + "RegionLabeling";
+                    //runtimeCmd=appname + " " + filename + " " + "-run" + " " + commandName6;
+                    //Process pr = Runtime.getRuntime().exec(runtimeCmd);
+                    //} catch (IOException err) {
+                    //    System.err.println("Caught Exception from routine Laplacian Guassian" + err);
+                    //}
+                    //imp.unlock();
                     //IJ.run("Demo RegionLabeling");
-                    //ij.IJ.runPlugIn("Demo_RegionLabeling", "");
-                    ij.IJ.showProgress(1.0);
-                    ij.IJ.showMessage("Completed.", "Thank you for running Region Labeling");
+                    ij.IJ.runPlugIn("Demo_RegionLabeling", "");
+                    //ij.IJ.showProgress(1.0);
+                    //ij.IJ.showMessage("Completed.", "Thank you for running Region Labeling");
                     break;
                 case "Region Contouring":
-                    try {
-                    String commandName="Demo" + " " + "RegionsAndContours";
-                    runtimeCmd=appname + " " + filename + " " + "-run" + " " + commandName;
-                    Process pr = Runtime.getRuntime().exec(runtimeCmd);
-                    } catch (IOException err) {
-                        System.err.println("Caught Exception from routine Laplacian Guassian" + err);
-                    }
-                    imp.unlock();
-                    IJ.run("Demo RegionsAndContours");
-                    //ij.IJ.runPlugIn("Demo_RegionsAndContours", "");
-                    ij.IJ.showProgress(1.0);
-                    ij.IJ.showMessage("Completed.", "Thank you for running Region Contouring");
+                    //try {
+                    //String commandName7="Demo" + " " + "RegionsAndContours";
+                    //runtimeCmd=appname + " " + filename + " " + "-run" + " " + commandName7;
+                    //Process pr = Runtime.getRuntime().exec(runtimeCmd);
+                    //} catch (IOException err) {
+                    //    System.err.println("Caught Exception from routine Laplacian Guassian" + err);
+                    //}
+                    //imp.unlock();
+                    //IJ.run("Demo RegionsAndContours");
+                    ij.IJ.runPlugIn("Demo_RegionsAndContours", "");
+                    //ij.IJ.showProgress(1.0);
+                    //ij.IJ.showMessage("Completed.", "Thank you for running Region Contouring");
                     break;
                 case "Custom Watershed":
                     
