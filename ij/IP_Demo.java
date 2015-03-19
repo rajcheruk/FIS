@@ -29,6 +29,7 @@ import static java.awt.event.WindowEvent.WINDOW_CLOSING;
 import static java.lang.Math.max;
 import static java.lang.System.currentTimeMillis;
 import java.util.concurrent.ExecutorService;
+import java.io.IOException;
 
 import fisprototype.CannyEdgeDetector;
 import fisprototype.GaussianScaleSpace;
@@ -65,6 +66,11 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
         public HierarchicalScaleSpace FISHierSpace;
         public FloatProcessor FISFP = null;
         public Demo_RegionLabeling RegionLabel = null;
+        
+        public final String appname="/usr/local/ImageJ/ImageJ";
+        public final String filename="/home/raj/evolution_research/Images/waxlake_2014298_lrg_bw.jpg";
+        public final String commandName="laplacian GaussianImpl";
+        public String runtimeCmd;
         
         public IP_Demo() {
 
@@ -112,8 +118,11 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
 
         @Override
 	public void actionPerformed(ActionEvent e) {
+                //FISImageJ = new ImageJ();
+                IJ.open();
                 ImageJ instance1 = ij.IJ.getInstance();
 		ImagePlus imp = WindowManager.getCurrentImage();
+                imp.show();
 
                 if (imp == null) {
 			beep();
@@ -175,7 +184,7 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
 
 	class Runner extends Thread { // inner class
 		private final String command;
-		private final ImagePlus imp;
+		public ImagePlus imp;
 	
 		Runner(String command, ImagePlus imp) {
 			super(command);
@@ -293,6 +302,7 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                  
 		void runCommand(String command, ImagePlus imp) {
                     
+                        runtimeCmd= appname + " " + filename + " " + commandName;
 			ImageProcessor ip = imp.getProcessor();
                         ImageCanvas ic = imp.getCanvas();
 
@@ -344,22 +354,34 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                     }
                     break;
                 case "Laplacian Gaussian":
-                    ij.IJ.runPlugIn("laplacian_GaussianImpl", "");                    
+                    try
+                    {
+                    System.out.println("RuntimeCmd   " + runtimeCmd);
+                    Process pr = Runtime.getRuntime().exec(runtimeCmd);
+                    } catch (IOException err) {
+                        System.err.println("Caught Exception from routine Laplacian Guassian" + err);
+                    }
+                    //IJ.run("laplacian GaussianImpl");
+                    //IJ.runUserPlugIn("laplacian GaussianImpl", "laplacian_GaussianImpl", "", true);
+                    //ij.IJ.runPlugIn("laplacian_GaussianImpl", "");                    
                     break;
                 case "Wavelets Image Pyramids":
-                    ij.IJ.runPlugIn("Image_Pyramid", "");
+                    IJ.run("Image Pyramid");
+                    //ij.IJ.runPlugIn("Image_Pyramid", "");
                     ij.IJ.showProgress(1.0);
                     ij.IJ.showMessage("Finished.", "Thank you for running Image Pyramid");
                     break;
                 case "Region Labeling":
                     imp.unlock();
-                    ij.IJ.runPlugIn("Demo_RegionLabeling", "");
+                    IJ.run("Demo RegionLabeling");
+                    //ij.IJ.runPlugIn("Demo_RegionLabeling", "");
                     ij.IJ.showProgress(1.0);
                     ij.IJ.showMessage("Completed.", "Thank you for running Region Labeling");
                     break;
                 case "Region Contouring":
                     imp.unlock();
-                    ij.IJ.runPlugIn("Demo_RegionsAndContours", "");
+                    IJ.run("Demo RegionsAndContours");
+                    //ij.IJ.runPlugIn("Demo_RegionsAndContours", "");
                     ij.IJ.showProgress(1.0);
                     ij.IJ.showMessage("Completed.", "Thank you for running Region Contouring");
                     break;
