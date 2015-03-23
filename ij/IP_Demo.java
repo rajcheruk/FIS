@@ -52,8 +52,8 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
     private static Frame instance;
     private static final long serialVersionUID = 1L;
         
-        public double sigma_s=10.006820, sigma_0=5.0;
-        public int P=2, Q=4, botLevel=3, topLevel=5;
+        public double sigma_s=5.000000, sigma_0=1.5;
+        public int P=8, Q=5, botLevel=1, topLevel=5;
         
         public ExecutorService concurrent_Thread;
         public String label="";
@@ -61,21 +61,21 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
 	private Panel panel;
 	private int previousID;
         
-        public ImageJ FISImageJ=null;
-        public Laplacian_Plugin LOGPlug=null;
-        public CannyEdgeDetector temp = null;
-        public CannyEdgeDetector.Parameters tempParams = new CannyEdgeDetector.Parameters();
-        public ByteProcessor edgeImg;
+        private ImageJ FISImageJ=null;
+        private Laplacian_Plugin LOGPlug=null;
+        private CannyEdgeDetector temp = null;
+        private CannyEdgeDetector.Parameters tempParams = new CannyEdgeDetector.Parameters();
+        private ByteProcessor edgeImg;
         
-        public GaussianScaleSpace FISGaussSpace=null;
-        public HierarchicalScaleSpace FISHierSpace;
-        public FloatProcessor FISFP = null;
-        public Demo_RegionLabeling RegionLabel = null;
+        private GaussianScaleSpace FISGaussSpace=null;
+        private HierarchicalScaleSpace FISHierSpace;
+        private FloatProcessor FISFP = null;
+        private Demo_RegionLabeling RegionLabel = null;
         
-        public final String appname="/usr/local/ImageJ/ImageJ";
-        public final String filename="/home/raj/evolution_research/Images/waxlake_2014298_lrg_bw.jpg";
+        private final String appname="/usr/local/ImageJ/ImageJ";
+        //public final String filename="/home/raj/evolution_research/Images/waxlake_2014298_lrg_bw.jpg";
         //public String commandName;
-        public String runtimeCmd;
+        private String runtimeCmd;
         
         public IP_Demo() {
 
@@ -209,7 +209,8 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                                 runCommand(label, imp);
 			} catch(OutOfMemoryError e) {
 				outOfMemory(command);
-				if (imp!=null) imp.unlock();
+				if (imp!=null) 
+                                    imp.unlock();
 			} 
                         break;
                         case "Laplacian Gaussian":
@@ -227,7 +228,8 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                                 runCommand(label, imp); 
                         } catch(OutOfMemoryError e)  {
                                 outOfMemory(command);
-                                if (imp!=null) imp.unlock();
+                                if (imp!=null) 
+                                    imp.unlock();
                         }
                         break;
                         case "Multi Resolution":
@@ -332,13 +334,13 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
 			showStatus(command + "...");
 			long startTime = currentTimeMillis();
 			Roi roi = imp.getRoi();
-			if (command.equals("Zoom In")||command.equals("Zoom Out")||command.equals("ZoomToFit")||command.equals("ZoomToScale"))
-				{roi = null; ip.resetRoi();}
+			//if (command.equals("Zoom In")||command.equals("Zoom Out")||command.equals("ZoomToFit")||command.equals("ZoomToScale"))
+			//	{roi = null; ip.resetRoi();}
 			ImageProcessor mask =  roi!=null?roi.getMask():null;
                         
             switch (command) {
                 case "Multi Resolution":
-                    ip.scale(1.5, 1.5);
+                    ip.scale(5.0, 5.0);
                     (new ImagePlus("Simple MultiResolution", ip)).show();
                     //imp.updateAndDraw();
                     break;
@@ -370,7 +372,12 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                     //Process pr = Runtime.getRuntime().exec(runtimeCmd);
                     //IJ.run(imp, "laplacian GaussianImpl", "");
                     //IJ.runUserPlugIn("laplacian GaussianImpl", "laplacian_GaussianImpl", "", true);
-                    ij.IJ.runPlugIn("laplacian_GaussianImpl", "");   
+                    //IJ.doCommand(command);
+                    //IJ.open(IJ.getDirectory("plugins"));
+                    //IJ.run(imp, "laplacian GaussianImpl", "");
+                    ij.IJ.runPlugIn(imp, "laplacian_GaussianImpl", "");
+                    ij.IJ.showProgress(1.0);
+                    ij.IJ.showMessage("Finished.", "Thank you for running Customized LOG Filter");
                     //new Laplacian_Plugin().run("");
                     break;
                 case "Wavelets Image Pyramids":
@@ -382,9 +389,11 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                     //    System.err.println("Caught Exception from routine Laplacian Guassian" + err);
                     //}
                     //IJ.run("Image Pyramid");
-                    ij.IJ.runPlugIn("Image_Pyramid", "");
-                    //ij.IJ.showProgress(1.0);
-                    //ij.IJ.showMessage("Finished.", "Thank you for running Image Pyramid");
+                    //IJ.open(IJ.getDirectory("plugins"));
+                    //IJ.run(imp, "Image Pyramid", "");
+                    ij.IJ.runPlugIn(imp, "Image_Pyramid", "");
+                    ij.IJ.showProgress(1.0);
+                    ij.IJ.showMessage("Finished.", "Thank you for running Image Pyramid");
                     break;
                 case "Region Labeling":
                     //try {
@@ -394,11 +403,12 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                     //} catch (IOException err) {
                     //    System.err.println("Caught Exception from routine Laplacian Guassian" + err);
                     //}
-                    //imp.unlock();
+                    imp.unlock();
+                    //IJ.open(IJ.getDirectory("plugins"));
                     //IJ.run("Demo RegionLabeling");
-                    ij.IJ.runPlugIn("Demo_RegionLabeling", "");
-                    //ij.IJ.showProgress(1.0);
-                    //ij.IJ.showMessage("Completed.", "Thank you for running Region Labeling");
+                    ij.IJ.runPlugIn(imp, "Demo_RegionLabeling", "");
+                    ij.IJ.showProgress(1.0);
+                    ij.IJ.showMessage("Completed.", "Thank you for running Region Labeling");
                     break;
                 case "Region Contouring":
                     //try {
@@ -408,11 +418,12 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                     //} catch (IOException err) {
                     //    System.err.println("Caught Exception from routine Laplacian Guassian" + err);
                     //}
-                    //imp.unlock();
+                    imp.unlock();
+                    //IJ.open(IJ.getDirectory("plugins"));
                     //IJ.run("Demo RegionsAndContours");
-                    ij.IJ.runPlugIn("Demo_RegionsAndContours", "");
-                    //ij.IJ.showProgress(1.0);
-                    //ij.IJ.showMessage("Completed.", "Thank you for running Region Contouring");
+                    ij.IJ.runPlugIn(imp, "Demo_RegionsAndContours", "");
+                    ij.IJ.showProgress(1.0);
+                    ij.IJ.showMessage("Completed.", "Thank you for running Region Contouring");
                     break;
                 case "Custom Watershed":
                     
@@ -425,7 +436,7 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                     break;
             }
             
-			//if (mask!=null) ip.reset(mask);
+			if (mask!=null) ip.reset(mask);
 			imp.updateAndDraw();
 			imp.unlock();
 			showStatus((currentTimeMillis()-startTime)+" milliseconds");
