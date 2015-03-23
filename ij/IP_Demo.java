@@ -1,8 +1,10 @@
 package ij;
 
 import ij.*;
+import ij.Executer;
 import ij.ImageJ;
 import ij.IJ;
+import java.lang.Object;
 import ij.process.*;
 import ij.process.ByteProcessor;
 import static ij.IJ.beep;
@@ -73,7 +75,7 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
         private Demo_RegionLabeling RegionLabel = null;
         
         private final String appname="/usr/local/ImageJ/ImageJ";
-        //public final String filename="/home/raj/evolution_research/Images/waxlake_2014298_lrg_bw.jpg";
+        public final String filename="/home/raj/evolution_research/Images/waxlake_2014298_lrg_bw.jpg";
         //public String commandName;
         private String runtimeCmd;
         
@@ -190,6 +192,7 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
 	class Runner extends Thread { // inner class
 		private final String command;
 		public ImagePlus imp;
+                public Executer ExecuterObj;
 	
 		Runner(String command, ImagePlus imp) {
 			super(command);
@@ -363,21 +366,22 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                     String commandName="laplacian";
                     String commandName1="GaussianImpl";
                     String cmd=commandName + " " + commandName1;
-                    String commandName2="-ijpath";
+                    String commandName2="-Dplugins.dir=";
                     String commandName3="/usr/local/ImageJ/Plugins";
-                    //String Command=commandName + " " + commandName1;
-                    //runtimeCmd=appname + " " + commandName2 + " " + commandName3 + " " + filename + " " + "-run" + " "  + "\"" + cmd + "\"";
+                    String Command=commandName + commandName1;
+                    //runtimeCmd=appname + " "  + filename + " " + "-run" + " "  + "\"" + cmd + "\"";
                     //runtimeCmd=appname + " " + commandName2 + " " + commandName3 + " " + filename + " " + "-run" + " "  + "crop";
                     //System.out.println(runtimeCmd);
-                    //Process pr = Runtime.getRuntime().exec(runtimeCmd);
                     //IJ.run(imp, "laplacian GaussianImpl", "");
+                    ExecuterObj = new ij.Executer("laplacian GaussianImpl", imp);
+                    //Process pr = Runtime.getRuntime().exec(runtimeCmd);
                     //IJ.runUserPlugIn("laplacian GaussianImpl", "laplacian_GaussianImpl", "", true);
                     //IJ.doCommand(command);
                     //IJ.open(IJ.getDirectory("plugins"));
                     //IJ.run(imp, "laplacian GaussianImpl", "");
-                    ij.IJ.runPlugIn(imp, "laplacian_GaussianImpl", "");
-                    ij.IJ.showProgress(1.0);
-                    ij.IJ.showMessage("Finished.", "Thank you for running Customized LOG Filter");
+                    //ij.IJ.runPlugIn(imp, "laplacian_GaussianImpl", "");
+                    //ij.IJ.showProgress(1.0);
+                    //ij.IJ.showMessage("Finished.", "Thank you for running Customized LOG Filter");
                     //new Laplacian_Plugin().run("");
                     break;
                 case "Wavelets Image Pyramids":
@@ -391,7 +395,8 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                     //IJ.run("Image Pyramid");
                     //IJ.open(IJ.getDirectory("plugins"));
                     //IJ.run(imp, "Image Pyramid", "");
-                    ij.IJ.runPlugIn(imp, "Image_Pyramid", "");
+                    ExecuterObj = new ij.Executer("Image Pyramid", imp);
+                    //ij.IJ.runPlugIn(imp, "Image_Pyramid", "");
                     ij.IJ.showProgress(1.0);
                     ij.IJ.showMessage("Finished.", "Thank you for running Image Pyramid");
                     break;
@@ -406,7 +411,8 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                     imp.unlock();
                     //IJ.open(IJ.getDirectory("plugins"));
                     //IJ.run("Demo RegionLabeling");
-                    ij.IJ.runPlugIn(imp, "Demo_RegionLabeling", "");
+                    ExecuterObj = new ij.Executer("Demo RegionLabeling", imp);
+                    //ij.IJ.runPlugIn(imp, "Demo_RegionLabeling", "");
                     ij.IJ.showProgress(1.0);
                     ij.IJ.showMessage("Completed.", "Thank you for running Region Labeling");
                     break;
@@ -421,7 +427,8 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                     imp.unlock();
                     //IJ.open(IJ.getDirectory("plugins"));
                     //IJ.run("Demo RegionsAndContours");
-                    ij.IJ.runPlugIn(imp, "Demo_RegionsAndContours", "");
+                    //ij.IJ.runPlugIn(imp, "Demo_RegionsAndContours", "");
+                    ExecuterObj = new ij.Executer("Demo RegionsAndContours", imp);
                     ij.IJ.showProgress(1.0);
                     ij.IJ.showMessage("Completed.", "Thank you for running Region Contouring");
                     break;
