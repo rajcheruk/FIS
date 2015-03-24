@@ -57,24 +57,23 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
         public double sigma_s=5.000000, sigma_0=1.5;
         public int P=8, Q=5, botLevel=1, topLevel=5;
         
-        public ExecutorService concurrent_Thread;
         public String label="";
         private final double scale=5.0;
 	private Panel panel;
 	private int previousID;
         
-        private ImageJ FISImageJ=null;
-        private Laplacian_Plugin LOGPlug=null;
-        private CannyEdgeDetector temp = null;
-        private CannyEdgeDetector.Parameters tempParams = new CannyEdgeDetector.Parameters();
-        private ByteProcessor edgeImg;
+        protected ImageJ FISImageJ=null;
+        protected Laplacian_Plugin LOGPlug=null;
+        protected CannyEdgeDetector temp = null;
+        protected CannyEdgeDetector.Parameters tempParams = new CannyEdgeDetector.Parameters();
+        protected ByteProcessor edgeImg;
         
-        private GaussianScaleSpace FISGaussSpace=null;
-        private HierarchicalScaleSpace FISHierSpace;
-        private FloatProcessor FISFP = null;
-        private Demo_RegionLabeling RegionLabel = null;
+        protected GaussianScaleSpace FISGaussSpace=null;
+        protected HierarchicalScaleSpace FISHierSpace;
+        protected FloatProcessor FISFP = null;
+        protected Demo_RegionLabeling RegionLabel = null;
         
-        private final String appname="/usr/local/ImageJ/ImageJ";
+        private final String appname="/home/raj/jdk1.8.0_31/jre/bin/java -Xms32m -Xmx4795m -Xincgc -XX:+DisabledExplicitGC -cp ij.jar ij.ImageJ";
         public final String filename="/home/raj/evolution_research/Images/waxlake_2014298_lrg_bw.jpg";
         //public String commandName;
         private String runtimeCmd;
@@ -125,11 +124,9 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
 
         @Override
 	public void actionPerformed(ActionEvent e) {
-                //FISImageJ = new ImageJ();
-                //IJ.open();
+
                 ImageJ instance1 = ij.IJ.getInstance();
 		ImagePlus imp = WindowManager.getCurrentImage();
-                //imp.show();
 
                 if (imp == null) {
 			beep();
@@ -362,26 +359,30 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                         //imp.updateAndDraw();
                     }
                     break;
-                case "Laplacian Gaussian":
-                    String commandName="laplacian";
-                    String commandName1="GaussianImpl";
-                    String cmd=commandName + " " + commandName1;
-                    String commandName2="-Dplugins.dir=";
-                    String commandName3="/usr/local/ImageJ/Plugins";
-                    String Command=commandName + commandName1;
+                case "Laplacian Gaussian": 
+                    //String commandName="laplacian";
+                    //String commandName1="GaussianImpl";
+                    //String cmd=commandName + " " + commandName1;
+                    //String commandName2="-Dplugins.dir=";
+                    //String commandName3="/usr/local/ImageJ/Plugins";
+                    //String Command=commandName + commandName1;
                     //runtimeCmd=appname + " "  + filename + " " + "-run" + " "  + "\"" + cmd + "\"";
                     //runtimeCmd=appname + " " + commandName2 + " " + commandName3 + " " + filename + " " + "-run" + " "  + "crop";
                     //System.out.println(runtimeCmd);
                     //IJ.run(imp, "laplacian GaussianImpl", "");
-                    ExecuterObj = new ij.Executer("laplacian GaussianImpl", imp);
-                    //Process pr = Runtime.getRuntime().exec(runtimeCmd);
+                    //ExecuterObj = new ij.Executer("laplacian GaussianImpl", imp);
+                    //try {
+                    //    Process pr = Runtime.getRuntime().exec(runtimeCmd);
+                    //} catch (IOException err) {
+                    //    System.out.println("Caught Exception:" + err);
+                    //}
                     //IJ.runUserPlugIn("laplacian GaussianImpl", "laplacian_GaussianImpl", "", true);
                     //IJ.doCommand(command);
                     //IJ.open(IJ.getDirectory("plugins"));
                     //IJ.run(imp, "laplacian GaussianImpl", "");
-                    //ij.IJ.runPlugIn(imp, "laplacian_GaussianImpl", "");
-                    //ij.IJ.showProgress(1.0);
-                    //ij.IJ.showMessage("Finished.", "Thank you for running Customized LOG Filter");
+                    ij.IJ.runPlugIn(imp, "laplacian_GaussianImpl", "");
+                    ij.IJ.showProgress(1.0);
+                    ij.IJ.showMessage("Finished.", "Thank you for running Customized LOG Filter");
                     //new Laplacian_Plugin().run("");
                     break;
                 case "Wavelets Image Pyramids":
@@ -395,8 +396,8 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                     //IJ.run("Image Pyramid");
                     //IJ.open(IJ.getDirectory("plugins"));
                     //IJ.run(imp, "Image Pyramid", "");
-                    ExecuterObj = new ij.Executer("Image Pyramid", imp);
-                    //ij.IJ.runPlugIn(imp, "Image_Pyramid", "");
+                    //ExecuterObj = new ij.Executer("Image Pyramid", imp);
+                    ij.IJ.runPlugIn(imp, "Image_Pyramid", "");
                     ij.IJ.showProgress(1.0);
                     ij.IJ.showMessage("Finished.", "Thank you for running Image Pyramid");
                     break;
@@ -411,8 +412,8 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                     imp.unlock();
                     //IJ.open(IJ.getDirectory("plugins"));
                     //IJ.run("Demo RegionLabeling");
-                    ExecuterObj = new ij.Executer("Demo RegionLabeling", imp);
-                    //ij.IJ.runPlugIn(imp, "Demo_RegionLabeling", "");
+                    //ExecuterObj = new ij.Executer("Demo RegionLabeling", imp);
+                    ij.IJ.runPlugIn(imp, "Demo_RegionLabeling", "");
                     ij.IJ.showProgress(1.0);
                     ij.IJ.showMessage("Completed.", "Thank you for running Region Labeling");
                     break;
@@ -427,8 +428,8 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                     imp.unlock();
                     //IJ.open(IJ.getDirectory("plugins"));
                     //IJ.run("Demo RegionsAndContours");
-                    //ij.IJ.runPlugIn(imp, "Demo_RegionsAndContours", "");
-                    ExecuterObj = new ij.Executer("Demo RegionsAndContours", imp);
+                    ij.IJ.runPlugIn(imp, "Demo_RegionsAndContours", "");
+                    //ExecuterObj = new ij.Executer("Demo RegionsAndContours", imp);
                     ij.IJ.showProgress(1.0);
                     ij.IJ.showMessage("Completed.", "Thank you for running Region Contouring");
                     break;
