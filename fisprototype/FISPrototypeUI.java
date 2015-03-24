@@ -30,12 +30,14 @@ import javax.swing.*;
 import java.io.IOException;
 
 import ij.IP_Demo;
-import fisprototype.LoG;
-import fisprototype.laplacian_Gaussian;
-import fisprototype.gaussianNoise;
-import fisprototype.gaussianFilter;
-import fisprototype.condimentNoise;
+import FISPrototype.LoG;
+import FISPrototype.laplacian_Gaussian;
+import FISPrototype.gaussianNoise;
+import FISPrototype.gaussianFilter;
+import FISPrototype.condimentNoise;
+import FISPrototype.laplacian_GaussianImpl;
 
+import ij.process.ImageProcessor;
 
 //import fisprototype.RegionContourLabeling;
 //import ij.process.ByteProcessor;
@@ -45,7 +47,7 @@ import ij.ImagePlus;
 import static ij.IJ.beep;
 import static ij.IJ.showStatus;
 import static ij.WindowManager.getCurrentImage;
-
+import ij.plugin.filter.PlugInFilter;
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
@@ -89,10 +91,10 @@ public class FISPrototypeUI {
                 
                 public BufferedImage bufferedImage = null;
                 
-                public ij.IP_Demo CustomCommands = null;
+                protected ij.IP_Demo CustomCommands = null;
                 
-                public ImageJ FISImageJ=null;
-                public laplacian_Gaussian LaplacianGaussian = null;
+                protected ImageJ FISImageJ=null;
+                protected laplacian_Gaussian LaplacianGaussian = null;
                 
                 // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
                 // Generated using JFormDesigner Evaluation license - Rajabhushanam Cherukuri
@@ -248,8 +250,13 @@ public class FISPrototypeUI {
                                     //    } catch (IOException ex) {
                                     //        System.err.println("ImageJ Exception:" + ex);
                                     //    }
+                                    Class<?> plugin1Class = laplacian_GaussianImpl.class;
+                                    String URL = plugin1Class.getResource("/" + plugin1Class.getName().replace('.', '/') + ".class").toString();
+                                    String pluginsDir = URL.substring(5, URL.length() - plugin1Class.getName().length() - 6);
+                                    System.out.println("PLUGINS DIR:" + pluginsDir);
+                                    System.setProperty("plugins.dir", pluginsDir);
                                     
-                                    FISImageJ = new ImageJ();
+                                    FISImageJ = new ImageJ(null, 1);
                                     CustomCommands = new IP_Demo();
 
                                     //ImageFISFrame.pack();                    
