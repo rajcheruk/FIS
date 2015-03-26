@@ -299,6 +299,7 @@ public class ImageJ extends Frame implements ActionListener,
             PlugInFilterRunner plugInFilterRunner = new PlugInFilterRunner("Demo_RegionsAndContours.java", cmd, arg);
               
           }
+          
 	public Object runUserPlugIn(String commandName, String className, String arg, boolean createNewLoader) {
 		return IJ.runUserPlugIn(commandName, className, arg, createNewLoader);	
 	} 
