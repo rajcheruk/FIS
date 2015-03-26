@@ -41,9 +41,6 @@ import fisprototype.GaussianScaleSpace;
 import fisprototype.HierarchicalScaleSpace;
 import ij.process.FloatProcessor;
 import fisprototype.Demo_RegionLabeling;
-import ij.Laplacian_Plugin;
-
-
 
 /**
 	Image Processing Demo. Demonstrates how to create a custom user interface, how
@@ -63,7 +60,7 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
 	private int previousID;
         
         protected ImageJ FISImageJ=null;
-        protected Laplacian_Plugin LOGPlug=null;
+        
         protected CannyEdgeDetector temp = null;
         protected CannyEdgeDetector.Parameters tempParams = new CannyEdgeDetector.Parameters();
         protected ByteProcessor edgeImg;
@@ -434,7 +431,7 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                     ij.IJ.showMessage("Completed.", "Thank you for running Region Contouring");
                     break;
                 case "Custom Watershed":
-                    
+                    ij.IJ.runPlugIn(imp, "Watershed_Algorithm", "");
                     break;
                 case "IsoData Classifier":
                    
