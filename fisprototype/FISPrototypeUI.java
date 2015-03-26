@@ -30,12 +30,12 @@ import javax.swing.*;
 import java.io.IOException;
 
 import ij.IP_Demo;
-import FISPrototype.LoG;
-import FISPrototype.laplacian_Gaussian;
-import FISPrototype.gaussianNoise;
-import FISPrototype.gaussianFilter;
-import FISPrototype.condimentNoise;
-import FISPrototype.laplacian_GaussianImpl;
+import ij.LoG;
+import ij.laplacian_Gaussian;
+import ij.gaussianNoise;
+import ij.gaussianFilter;
+import ij.condimentNoise;
+import ij.laplacian_GaussianImpl;
 
 import ij.process.ImageProcessor;
 
@@ -73,6 +73,7 @@ public class FISPrototypeUI {
                 Frame.setSize(512, 512);
                 Frame.setLocationByPlatform(true);
                 Frame.setLocation(450, 100);
+                Frame.setTitle("Climate Change and Prediction System");
                 Frame.setVisible(true);
                 
                 //command = args[0];
@@ -254,7 +255,7 @@ public class FISPrototypeUI {
                                     String URL = plugin1Class.getResource("/" + plugin1Class.getName().replace('.', '/') + ".class").toString();
                                     String pluginsDir = URL.substring(5, URL.length() - plugin1Class.getName().length() - 6);
                                     System.out.println("PLUGINS DIR:" + pluginsDir);
-                                    System.setProperty("plugins.dir", pluginsDir);
+                                    System.setProperty("plugins.dir", "/usr/local/ImageJ/plugins");
                                     
                                     FISImageJ = new ImageJ(null, 1);
                                     CustomCommands = new IP_Demo();
