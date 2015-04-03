@@ -4,13 +4,10 @@ import ij.*;
 import ij.Executer;
 import ij.ImageJ;
 import ij.IJ;
-import java.lang.Object;
-import ij.process.*;
 import ij.process.ByteProcessor;
 import static ij.IJ.beep;
 import static ij.IJ.escapePressed;
 import static ij.IJ.getInstance;
-import ij.OtherInstance.ImageJInstance;
 import static ij.IJ.outOfMemory;
 import static ij.IJ.resetEscape;
 import static ij.IJ.showStatus;
@@ -32,15 +29,13 @@ import java.awt.event.WindowEvent;
 import static java.awt.event.WindowEvent.WINDOW_CLOSING;
 import static java.lang.Math.max;
 import static java.lang.System.currentTimeMillis;
-import java.util.concurrent.ExecutorService;
-import java.io.IOException;
-import ij.plugin.*;
 
 import fisprototype.CannyEdgeDetector;
 import fisprototype.GaussianScaleSpace;
 import fisprototype.HierarchicalScaleSpace;
 import ij.process.FloatProcessor;
 import fisprototype.Demo_RegionLabeling;
+
 
 /**
 	Image Processing Demo. Demonstrates how to create a custom user interface, how
@@ -94,6 +89,8 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                 addButton("Laplacian Gaussian");
 
                 addButton("Multi Scale");
+                
+                addButton("Boundary Detection");
 		addButton("Multi Resolution");
                 addButton("Wavelets Image Pyramids");
 
@@ -149,6 +146,9 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                             new Runner(label, imp);
                             break;
                     case "Multi Scale":
+                            new Runner(label, imp);
+                            break;
+                    case "Boundary Detection":
                             new Runner(label, imp);
                             break;
                     case "Multi Resolution":
@@ -229,6 +229,14 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                                     imp.unlock();
                         }
                         break;
+                        case "Boundary Detection":
+                            try {
+                                 runCommand(label, imp);
+                            } catch (OutOfMemoryError e) {
+                                 outOfMemory(command);
+                                 if (imp != null)
+                                     imp.unlock();
+                            }                           
                         case "Multi Resolution":
                             try {
                                 runCommand(label, imp);
@@ -356,6 +364,11 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                         //imp.updateAndDraw();
                     }
                     break;
+                case "Boundary Detection":
+                    ij.IJ.runPlugIn(imp, "GLCM_Texture", "");
+                    ij.IJ.showProgress(1, 0);
+                    ij.IJ.showMessage("Completed..", "Thank you for running GLCM Teture Measure");
+                    break;
                 case "Laplacian Gaussian": 
                     //String commandName="laplacian";
                     //String commandName1="GaussianImpl";
@@ -431,7 +444,10 @@ public final class IP_Demo extends PlugInFrame implements ActionListener {
                     ij.IJ.showMessage("Completed.", "Thank you for running Region Contouring");
                     break;
                 case "Custom Watershed":
+                    imp.unlock();
                     ij.IJ.runPlugIn(imp, "Watershed_Algorithm", "");
+                    ij.IJ.showProgress(1.0);
+                    ij.IJ.showMessage("Completed.", "Thank you for running Watershed Alogorithm");
                     break;
                 case "IsoData Classifier":
                    
