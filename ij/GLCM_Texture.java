@@ -24,6 +24,7 @@ import java.awt.*;
 import ij.plugin.PlugIn;
 import ij.text.*;
 import ij.measure.ResultsTable;
+import java.lang.Number;
 
 //===========source====================================
 public class GLCM_Texture implements PlugInFilter {
@@ -39,11 +40,15 @@ public class GLCM_Texture implements PlugInFilter {
     public static int     floatWidth=0;
     public static int     floatHeight=0;
     public FloatProcessor TextureFP = null;
+    public ImageConverter   iconv=null;
+    public ImagePlus imp1 = null;
     
     ResultsTable rt = ResultsTable.getResultsTable();
 
     public int setup(String arg, ImagePlus imp) {
         if (imp != null && !showDialog()) {
+            iconv = new ImageConverter(imp);
+            iconv.convertToGray8();
             return DONE;
         }
         rt.reset();
@@ -60,6 +65,7 @@ public class GLCM_Texture implements PlugInFilter {
         
         TextureFP = new FloatProcessor(floatWidth, floatHeight);
         TextureFP = (FloatProcessor) ip.convertToFloat();
+        
     
         int width = ip.getWidth();
         Rectangle r = ip.getRoi();
@@ -70,7 +76,7 @@ public class GLCM_Texture implements PlugInFilter {
         // The varialbe b holds the value of the pixel which is the neighbor to the  pixel where the Image Processor is sitting its attention
         int a;
         int b;
-        float pixelCounter = 0;
+        double pixelCounter = 0;
 
         //====================================================================================================
         // This part computes the Gray Level Correlation Matrix based in the step selected by the user
@@ -91,16 +97,9 @@ public class GLCM_Texture implements PlugInFilter {
                     glcm[a][b] += 1;
                     glcm[b][a] += 1;
                     pixelCounter += 2;
-
                 }
             }
         }
-
-                    TextureFP = new FloatProcessor(glcm);
-                    //TextureFP.setFloatArray(glcm);
-                    (new ImagePlus("Gray Level Cooccurance Matrix - Texture Measure", TextureFP)).show();	
-
-
                     //float [] [] glcmf= new float [257][257];
                     //for (a=0;  a<257; a++)  {
                     //	for (b=0; b<257;b++) {
@@ -165,7 +164,9 @@ public class GLCM_Texture implements PlugInFilter {
 // The number of pixels is used as a normalizing constant
         for (a = 0; a < 257; a++) {
             for (b = 0; b < 257; b++) {
-                glcm[a][b] = (glcm[a][b]) / (pixelCounter);
+                glcm[a][b]= Float.intBitsToFloat((int) (glcm[a][b] / pixelCounter));
+                //glcm[a][b] = (float) ((glcm[a][b]) / (pixelCounter));
+                System.out.println("Pixel Values: " + glcm[a][b]);
             }
         }
 
@@ -277,28 +278,25 @@ public class GLCM_Texture implements PlugInFilter {
         rt.show("Results");
 
 //===============================================================================================
-//		TextWindow tw = new TextWindow("Haralick's texture features   ", "", 400, 200);
-//		tw.append("  ");
-//		tw.append ("Total pixels analyzed  "+ pixelCounter);
-//		tw.append ( "Selected Step   " + selectedStep);
-//		tw.append ("Size of the step   "+ step);
-//		tw.append ("3 a la quinta   "+ Math.pow(3,5));
+        //TextWindow tw = new TextWindow("Haralick's texture features   ", "", 400, 200);
+	//tw.append("  ");
+	//tw.append ("Total pixels analyzed  "+ pixelCounter);
+	//tw.append ( "Selected Step   " + selectedStep);
+	//tw.append ("Size of the step   "+ step);
+	//tw.append ("3 a la quinta   "+ Math.pow(3,5));
         
-                    //TextureFP = new FloatProcessor(glcm);
-                    //TextureFP.setFloatArray(glcm);
-                    //(new ImagePlus("Gray Level Cooccurance Matrix - Texture Measure", TextureFP)).show();	
-   
-                    //float [][] glcmf= new float[257][257];
-                    //for (a=0;  a<257; a++)  {
-                    //	for (b=0; b<257;b++) {
-                    //      glcmf[a][b]=(float)glcm[a][b];
-                    //    }
-                    //}
-                    
-                    //new ImagePlus("glcm", new FloatProcessor(glcmf)).show();	
+        TextureFP = new FloatProcessor(glcm);
+        //TextureFP.setFloatArray(glcm);
+        //TextureFP = (FloatProcessor) TextureFP.convertToByte(true);
         
-                    // Include Run Length Distribution, gray level Distribution, Run Percentage,
-                    // Long Run Emphasis --- from Landgrebe Slides.
+        imp1 = new ImagePlus("Gray Level Cooccurance Matrix - Texture Measure", TextureFP);
+ 
+        iconv = new ImageConverter(imp1);
+        iconv.convertToGray8();
+        imp1.show();
+        
+        // Include Run Length Distribution, gray level Distribution, Run Percentage,
+        // Long Run Emphasis --- from Landgrebe Slides.
    
     }
 
