@@ -29,7 +29,7 @@ import java.lang.Number;
 //===========source====================================
 public class GLCM_Texture implements PlugInFilter {
 
-    static int step = 1;
+    static int step = 5;
     static String selectedStep = "0 degrees";
     static boolean doIcalculateASM = true;
     static boolean doIcalculateContrast = true;
@@ -57,6 +57,9 @@ public class GLCM_Texture implements PlugInFilter {
 
     public void run(ImageProcessor ip) {
 
+        if (!(ip instanceof ByteProcessor)) return;
+            if(!(ip.getPixels() instanceof byte[])) return;
+            
         // This part get al the pixel values into the pixel [ ] array via the Image Processor
         byte[] pixels = (byte[]) ip.getPixels();
     
@@ -66,11 +69,8 @@ public class GLCM_Texture implements PlugInFilter {
         TextureFP = new FloatProcessor(floatWidth, floatHeight);
         TextureFP = (FloatProcessor) ip.convertToFloat();
         
-    
         int width = ip.getWidth();
         Rectangle r = ip.getRoi();
-
-   //}
         
         // The variable a holds the value of the pixel where the Image Processor is sitting its attention
         // The varialbe b holds the value of the pixel which is the neighbor to the  pixel where the Image Processor is sitting its attention
@@ -83,7 +83,7 @@ public class GLCM_Texture implements PlugInFilter {
         //Based on BRDF -- Rajabhushanam
         
         int offset, i;
-        float [][] glcm = new float [257][257];
+        float [][] glcm = new float [floatWidth][floatHeight];
 
         if (selectedStep.equals("0 degrees")) {
 
@@ -92,14 +92,18 @@ public class GLCM_Texture implements PlugInFilter {
                 for (int x = r.x; x < (r.x + r.width); x++) {
                     i = offset + x;
 
-                    a = 0xff & pixels[i];
-                    b = 0xff & (ip.getPixel(x + step, y));
+                    a = (0xFF & pixels[i]);
+                    b = (0xFF & (ip.getPixel(x + step, y)));
+                    //b = (int) Float.intBitsToFloat(ip.getPixel(x + step, y));
+                    //b = 0xff & b;
+                    
                     glcm[a][b] += 1;
                     glcm[b][a] += 1;
                     pixelCounter += 2;
                 }
             }
         }
+
                     //float [] [] glcmf= new float [257][257];
                     //for (a=0;  a<257; a++)  {
                     //	for (b=0; b<257;b++) {
@@ -115,8 +119,8 @@ public class GLCM_Texture implements PlugInFilter {
                 for (int x = r.x; x < (r.x + r.width); x++) {
                     i = offset + x;
 
-                    a = 0xff & pixels[i];
-                    b = 0xff & (ip.getPixel(x, y - step));
+                    a = (0xFF & pixels[i]);
+                    b = (0xFF & (ip.getPixel(x, y - step)));
                     glcm[a][b] += 1;
                     glcm[b][a] += 1;
                     pixelCounter += 2;
@@ -132,12 +136,12 @@ public class GLCM_Texture implements PlugInFilter {
                 for (int x = r.x; x < (r.x + r.width); x++) {
                     i = offset + x;
 
-                    a = 0xff & pixels[i];
-                    b = 0xff & (ip.getPixel(x - step, y));
+                    a = (0xFF & pixels[i]);
+                    b = (0xFF & (ip.getPixel(x - step, y)));
                     glcm[a][b] += 1;
                     glcm[b][a] += 1;
                     pixelCounter += 2;
-
+                    
                 }
             }
         }
@@ -149,14 +153,15 @@ public class GLCM_Texture implements PlugInFilter {
                 for (int x = r.x; x < (r.x + r.width); x++) {
                     i = offset + x;
 
-                    a = 0xff & pixels[i];
-                    b = 0xff & (ip.getPixel(x, y + step));
+                    a = (0xFF & pixels[i]);
+                    b = (0xFF & (ip.getPixel(x, y + step)));
                     glcm[a][b] += 1;
                     glcm[b][a] += 1;
                     pixelCounter += 2;
 
                 }
             }
+            
         }
 //=====================================================================================================
 
@@ -164,9 +169,9 @@ public class GLCM_Texture implements PlugInFilter {
 // The number of pixels is used as a normalizing constant
         for (a = 0; a < 257; a++) {
             for (b = 0; b < 257; b++) {
-                glcm[a][b]= Float.intBitsToFloat((int) (glcm[a][b] / pixelCounter));
-                //glcm[a][b] = (float) ((glcm[a][b]) / (pixelCounter));
-                System.out.println("Pixel Values: " + glcm[a][b]);
+                //glcm[a][b]= Float.intBitsToFloat((int) (glcm[a][b] / pixelCounter));
+                glcm[a][b] = (float) ((glcm[a][b]) / (pixelCounter));
+                //System.out.println("Pixel Values: " + glcm[a][b]);
             }
         }
 
@@ -285,6 +290,7 @@ public class GLCM_Texture implements PlugInFilter {
 	//tw.append ("Size of the step   "+ step);
 	//tw.append ("3 a la quinta   "+ Math.pow(3,5));
         
+        
         TextureFP = new FloatProcessor(glcm);
         //TextureFP.setFloatArray(glcm);
         //TextureFP = (FloatProcessor) TextureFP.convertToByte(true);
@@ -295,9 +301,11 @@ public class GLCM_Texture implements PlugInFilter {
         iconv.convertToGray8();
         imp1.show();
         
+        
         // Include Run Length Distribution, gray level Distribution, Run Percentage,
         // Long Run Emphasis --- from Landgrebe Slides.
    
+        
     }
 
     
