@@ -63,14 +63,14 @@ public class GLCM_Texture implements PlugInFilter {
         // This part get al the pixel values into the pixel [ ] array via the Image Processor
         byte[] pixels = (byte[]) ip.getPixels();
     
-        floatWidth = ip.getWidth();
-        floatHeight = ip.getHeight();
+        int width = ip.getWidth();
+        Rectangle r = ip.getRoi();
+        
+        floatWidth = r.width;
+        floatHeight = r.height;
         
         TextureFP = new FloatProcessor(floatWidth, floatHeight);
         TextureFP = (FloatProcessor) ip.convertToFloat();
-        
-        int width = ip.getWidth();
-        Rectangle r = ip.getRoi();
         
         // The variable a holds the value of the pixel where the Image Processor is sitting its attention
         // The varialbe b holds the value of the pixel which is the neighbor to the  pixel where the Image Processor is sitting its attention
@@ -167,8 +167,8 @@ public class GLCM_Texture implements PlugInFilter {
 
 // This part divides each member of the glcm matrix by the number of pixels. The number of pixels was stored in the pixelCounter variable
 // The number of pixels is used as a normalizing constant
-        for (a = 0; a < 257; a++) {
-            for (b = 0; b < 257; b++) {
+        for (a = 0; a < floatWidth; a++) {
+            for (b = 0; b < floatHeight; b++) {
                 //glcm[a][b]= Float.intBitsToFloat((int) (glcm[a][b] / pixelCounter));
                 glcm[a][b] = (float) ((glcm[a][b]) / (pixelCounter));
                 //System.out.println("Pixel Values: " + glcm[a][b]);
@@ -182,8 +182,8 @@ public class GLCM_Texture implements PlugInFilter {
 
         if (doIcalculateASM == true) {
             double asm = 0.0;
-            for (a = 0; a < 257; a++) {
-                for (b = 0; b < 257; b++) {
+            for (a = 0; a < floatWidth; a++) {
+                for (b = 0; b < floatHeight; b++) {
                     asm = asm + (glcm[a][b] * glcm[a][b]);
                 }
             }
@@ -194,8 +194,8 @@ public class GLCM_Texture implements PlugInFilter {
 // This part calculates the contrast; the value is stored in contrast
         if (doIcalculateContrast == true) {
             double contrast = 0.0;
-            for (a = 0; a < 257; a++) {
-                for (b = 0; b < 257; b++) {
+            for (a = 0; a < floatWidth; a++) {
+                for (b = 0; b < floatHeight; b++) {
                     contrast = contrast + (a - b) * (a - b) * (glcm[a][b]);
                 }
             }
@@ -218,8 +218,8 @@ public class GLCM_Texture implements PlugInFilter {
             double stdevx = 0.0;
             double stdevy = 0.0;
 
-            for (a = 0; a < 257; a++) {
-                for (b = 0; b < 257; b++) {
+            for (a = 0; a < floatWidth; a++) {
+                for (b = 0; b < floatHeight; b++) {
                     px = px + a * glcm[a][b];
                     py = py + b * glcm[a][b];
 
@@ -227,16 +227,16 @@ public class GLCM_Texture implements PlugInFilter {
             }
 
 // Now calculate the standard deviations
-            for (a = 0; a < 257; a++) {
-                for (b = 0; b < 257; b++) {
+            for (a = 0; a < floatWidth; a++) {
+                for (b = 0; b < floatHeight; b++) {
                     stdevx = stdevx + (a - px) * (a - px) * glcm[a][b];
                     stdevy = stdevy + (b - py) * (b - py) * glcm[a][b];
                 }
             }
 
 // Now finally calculate the correlation parameter
-            for (a = 0; a < 257; a++) {
-                for (b = 0; b < 257; b++) {
+            for (a = 0; a < floatWidth; a++) {
+                for (b = 0; b < floatHeight; b++) {
                     correlation = correlation + ((a - px) * (b - py) * glcm[a][b] / (stdevx * stdevy));
                 }
             }
@@ -248,8 +248,8 @@ public class GLCM_Texture implements PlugInFilter {
 
         if (doIcalculateIDM == true) {
             double IDM = 0.0;
-            for (a = 0; a < 257; a++) {
-                for (b = 0; b < 257; b++) {
+            for (a = 0; a < floatWidth; a++) {
+                for (b = 0; b < floatHeight; b++) {
                     IDM = IDM + (glcm[a][b] / (1 + (a - b) * (a - b)));
                 }
             }
@@ -261,8 +261,8 @@ public class GLCM_Texture implements PlugInFilter {
 // This part calculates the entropy
         if (doIcalculateEntropy == true) {
             double entropy = 0.0;
-            for (a = 0; a < 257; a++) {
-                for (b = 0; b < 257; b++) {
+            for (a = 0; a < floatWidth; a++) {
+                for (b = 0; b < floatHeight; b++) {
                     if (glcm[a][b] == 0) {
                     } else {
                         entropy = entropy - (glcm[a][b] * (Math.log(glcm[a][b])));
@@ -274,8 +274,8 @@ public class GLCM_Texture implements PlugInFilter {
         }
 
         double suma = 0.0;
-        for (a = 0; a < 257; a++) {
-            for (b = 0; b < 257; b++) {
+        for (a = 0; a < floatWidth; a++) {
+            for (b = 0; b < floatHeight; b++) {
                 suma = suma + glcm[a][b];
             }
         }
