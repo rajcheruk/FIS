@@ -57,6 +57,8 @@ public class GLCM_Texture implements PlugInFilter {
 
     public void run(ImageProcessor ip) {
 
+        Rectangle r = ip.getRoi();
+        
         if (!(ip instanceof ByteProcessor)) return;
             if(!(ip.getPixels() instanceof byte[])) return;
             
@@ -64,10 +66,10 @@ public class GLCM_Texture implements PlugInFilter {
         byte[] pixels = (byte[]) ip.getPixels();
     
         int width = ip.getWidth();
-        Rectangle r = ip.getRoi();
         
-        floatWidth = r.width;
-        floatHeight = r.height;
+        
+        floatWidth = r.x + r.width;
+        floatHeight = r.y + r.height;
         
         TextureFP = new FloatProcessor(floatWidth, floatHeight);
         TextureFP = (FloatProcessor) ip.convertToFloat();
@@ -102,6 +104,17 @@ public class GLCM_Texture implements PlugInFilter {
                     pixelCounter += 2;
                 }
             }
+            
+            TextureFP = new FloatProcessor(glcm);
+            //TextureFP.setFloatArray(glcm);
+            //TextureFP = (FloatProcessor) TextureFP.convertToByte(true);
+        
+            imp1 = new ImagePlus("Gray Level Cooccurance Matrix - Texture Measure", TextureFP);
+ 
+            iconv = new ImageConverter(imp1);
+            iconv.convertToGray8();
+            imp1.show();
+            
         }
 
                     //float [] [] glcmf= new float [257][257];
@@ -127,6 +140,16 @@ public class GLCM_Texture implements PlugInFilter {
 
                 }
             }
+            
+            TextureFP = new FloatProcessor(glcm);
+            //TextureFP.setFloatArray(glcm);
+            //TextureFP = (FloatProcessor) TextureFP.convertToByte(true);
+
+            imp1 = new ImagePlus("Gray Level Cooccurance Matrix - Texture Measure", TextureFP);
+
+            iconv = new ImageConverter(imp1);
+            iconv.convertToGray8();
+            imp1.show();
         }
 
         if (selectedStep.equals("180 degrees")) {
@@ -144,6 +167,16 @@ public class GLCM_Texture implements PlugInFilter {
                     
                 }
             }
+            
+            TextureFP = new FloatProcessor(glcm);
+            //TextureFP.setFloatArray(glcm);
+            //TextureFP = (FloatProcessor) TextureFP.convertToByte(true);
+
+            imp1 = new ImagePlus("Gray Level Cooccurance Matrix - Texture Measure", TextureFP);
+
+            iconv = new ImageConverter(imp1);
+            iconv.convertToGray8();
+            imp1.show();
         }
 
         if (selectedStep.equals("270 degrees")) {
@@ -161,7 +194,15 @@ public class GLCM_Texture implements PlugInFilter {
 
                 }
             }
-            
+            TextureFP = new FloatProcessor(glcm);
+            //TextureFP.setFloatArray(glcm);
+            //TextureFP = (FloatProcessor) TextureFP.convertToByte(true);
+
+            imp1 = new ImagePlus("Gray Level Cooccurance Matrix - Texture Measure", TextureFP);
+
+            iconv = new ImageConverter(imp1);
+            iconv.convertToGray8();
+            imp1.show();
         }
 //=====================================================================================================
 
@@ -291,15 +332,7 @@ public class GLCM_Texture implements PlugInFilter {
 	//tw.append ("3 a la quinta   "+ Math.pow(3,5));
         
         
-        TextureFP = new FloatProcessor(glcm);
-        //TextureFP.setFloatArray(glcm);
-        //TextureFP = (FloatProcessor) TextureFP.convertToByte(true);
         
-        imp1 = new ImagePlus("Gray Level Cooccurance Matrix - Texture Measure", TextureFP);
- 
-        iconv = new ImageConverter(imp1);
-        iconv.convertToGray8();
-        imp1.show();
         
         
         // Include Run Length Distribution, gray level Distribution, Run Percentage,
