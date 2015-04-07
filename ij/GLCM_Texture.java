@@ -36,9 +36,13 @@ public class GLCM_Texture implements PlugInFilter {
     static boolean doIcalculateCorrelation = true;
     static boolean doIcalculateIDM = true;
     static boolean doIcalculateEntropy = true;
-
-    public static int     floatWidth=0;
-    public static int     floatHeight=0;
+    static boolean doIcalculateLRE = true;
+    static boolean doIcalculateGLD = true;
+    static boolean doIcalculateRLD = true;
+    static boolean doIcalculateRP = true;    
+        
+    public int     floatWidth=0;
+    public int     floatHeight=0;
     public FloatProcessor TextureFP = null;
     public ImageConverter   iconv=null;
     public ImagePlus imp1 = null;
@@ -78,14 +82,14 @@ public class GLCM_Texture implements PlugInFilter {
         // The varialbe b holds the value of the pixel which is the neighbor to the  pixel where the Image Processor is sitting its attention
         int a;
         int b;
-        double pixelCounter = 0;
+        float pixelCounter = 0;
 
         //====================================================================================================
         // This part computes the Gray Level Correlation Matrix based in the step selected by the user
         //Based on BRDF -- Rajabhushanam
         
         int offset, i;
-        float [][] glcm = new float [floatWidth][floatHeight];
+        float[][] glcm= new float[floatWidth][floatHeight];
 
         if (selectedStep.equals("0 degrees")) {
 
@@ -103,20 +107,8 @@ public class GLCM_Texture implements PlugInFilter {
                     glcm[b][a] += 1;
                     pixelCounter += 2;
                     
-                    System.out.printf("%d %d %d %d %d %f %n", y, x, a, b, glcm[a][b], pixels[i]);
                 }
             }
-            
-            TextureFP = new FloatProcessor(glcm);
-            //TextureFP.setFloatArray(glcm);
-            //TextureFP = (FloatProcessor) TextureFP.convertToByte(true);
-        
-            imp1 = new ImagePlus("Gray Level Cooccurance Matrix - Texture Measure", TextureFP);
- 
-            iconv = new ImageConverter(imp1);
-            iconv.convertToGray8();
-            imp1.show();
-            
         }
 
                     //float [] [] glcmf= new float [257][257];
@@ -142,16 +134,6 @@ public class GLCM_Texture implements PlugInFilter {
 
                 }
             }
-            
-            TextureFP = new FloatProcessor(glcm);
-            //TextureFP.setFloatArray(glcm);
-            //TextureFP = (FloatProcessor) TextureFP.convertToByte(true);
-
-            imp1 = new ImagePlus("Gray Level Cooccurance Matrix - Texture Measure", TextureFP);
-
-            iconv = new ImageConverter(imp1);
-            iconv.convertToGray8();
-            imp1.show();
         }
 
         if (selectedStep.equals("180 degrees")) {
@@ -169,16 +151,6 @@ public class GLCM_Texture implements PlugInFilter {
                     
                 }
             }
-            
-            TextureFP = new FloatProcessor(glcm);
-            //TextureFP.setFloatArray(glcm);
-            //TextureFP = (FloatProcessor) TextureFP.convertToByte(true);
-
-            imp1 = new ImagePlus("Gray Level Cooccurance Matrix - Texture Measure", TextureFP);
-
-            iconv = new ImageConverter(imp1);
-            iconv.convertToGray8();
-            imp1.show();
         }
 
         if (selectedStep.equals("270 degrees")) {
@@ -196,15 +168,6 @@ public class GLCM_Texture implements PlugInFilter {
 
                 }
             }
-            TextureFP = new FloatProcessor(glcm);
-            //TextureFP.setFloatArray(glcm);
-            //TextureFP = (FloatProcessor) TextureFP.convertToByte(true);
-
-            imp1 = new ImagePlus("Gray Level Cooccurance Matrix - Texture Measure", TextureFP);
-
-            iconv = new ImageConverter(imp1);
-            iconv.convertToGray8();
-            imp1.show();
         }
 //=====================================================================================================
 
@@ -214,7 +177,7 @@ public class GLCM_Texture implements PlugInFilter {
             for (b = 0; b < floatHeight; b++) {
                 //glcm[a][b]= Float.intBitsToFloat((int) (glcm[a][b] / pixelCounter));
                 glcm[a][b] = (float) ((glcm[a][b]) / (pixelCounter));
-                //System.out.println("Pixel Values: " + glcm[a][b]);
+                //System.out.printf("%d %d %f %n", a, b, glcm[a][b]);
             }
         }
 
@@ -324,7 +287,53 @@ public class GLCM_Texture implements PlugInFilter {
         }
         rt.setValue("Sum of all GLCM elements", row, suma);
         rt.show("Results");
+        
+        
+        //=====================================================================================================
+        // This part calculates the Long Run Emphasis - LRE
 
+        if (doIcalculateLRE == true) {
+            double lre = 0.0;
+            for (a = 0; a < floatWidth; a++) {
+                for (b = 0; b < floatHeight; b++) {
+                    lre = lre + (glcm[a][b] * glcm[a][b]);
+                }
+            }
+            rt.setValue("Long Run Emphasis", row, lre);
+        }
+        
+        // Gray Level Distribution - GLD
+        if (doIcalculateGLD == true) {
+            double gld = 0.0;
+            for (a = 0; a < floatWidth; a++) {
+                for (b = 0; b < floatHeight; b++) {
+                    gld = gld + (glcm[a][b] * glcm[a][b]);
+                }
+            }
+            rt.setValue("Gray Level Distribution", row, gld);
+        }
+        
+        // Run Length Distribution - RLD
+        if (doIcalculateRLD == true) {
+            double rld = 0.0;
+            for (a = 0; a < floatWidth; a++) {
+                for (b = 0; b < floatHeight; b++) {
+                    rld = rld + (glcm[a][b] * glcm[a][b]);
+                }
+            }
+            rt.setValue("Run Length Distribution", row, rld);
+        }
+
+        // Run Percentage - RP
+        if (doIcalculateRP == true) {
+            double rp = 0.0;
+            for (a = 0; a < floatWidth; a++) {
+                for (b = 0; b < floatHeight; b++) {
+                    rp = rp + (glcm[a][b] * glcm[a][b]);
+                }
+            }
+            rt.setValue("Run Percentage", row, rp);
+        }
 //===============================================================================================
         //TextWindow tw = new TextWindow("Haralick's texture features   ", "", 400, 200);
 	//tw.append("  ");
@@ -334,6 +343,12 @@ public class GLCM_Texture implements PlugInFilter {
 	//tw.append ("3 a la quinta   "+ Math.pow(3,5));
         
         
+            TextureFP = new FloatProcessor(glcm);
+            imp1 = new ImagePlus("Gray Level Cooccurance Matrix - Texture Measure", TextureFP);
+            iconv = new ImageConverter(imp1);
+            iconv.convertToGray8();
+            imp1.show();
+            
         
         
         
@@ -360,7 +375,12 @@ public class GLCM_Texture implements PlugInFilter {
         gd.addCheckbox("Correlation  ", doIcalculateCorrelation);
         gd.addCheckbox("Inverse Difference Moment  ", doIcalculateIDM);
         gd.addCheckbox("Entropy   ", doIcalculateEntropy);
-
+        gd.addCheckbox("Long Run Emphasis ", doIcalculateLRE);
+        gd.addCheckbox("Gray Level Distribution ", doIcalculateGLD);
+        gd.addCheckbox("Run Length Distribution ", doIcalculateRLD);
+        gd.addCheckbox("Run Percentage ", doIcalculateRP);
+                
+                
         gd.showDialog();
         if (gd.wasCanceled()) {
             return false;
@@ -373,7 +393,11 @@ public class GLCM_Texture implements PlugInFilter {
         doIcalculateCorrelation = gd.getNextBoolean();
         doIcalculateIDM = gd.getNextBoolean();
         doIcalculateEntropy = gd.getNextBoolean();
-
+        doIcalculateLRE = gd.getNextBoolean();
+        doIcalculateGLD = gd.getNextBoolean();
+        doIcalculateRLD = gd.getNextBoolean();
+        doIcalculateRP = gd.getNextBoolean();
+        
         return true;
     }
 }
