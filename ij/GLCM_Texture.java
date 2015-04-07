@@ -102,6 +102,8 @@ public class GLCM_Texture implements PlugInFilter {
                     glcm[a][b] += 1;
                     glcm[b][a] += 1;
                     pixelCounter += 2;
+                    
+                    System.out.printf("%d %d %d %d %d %f %n", y, x, a, b, glcm[a][b], pixels[i]);
                 }
             }
             
