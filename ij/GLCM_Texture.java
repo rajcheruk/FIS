@@ -69,8 +69,7 @@ public class GLCM_Texture implements PlugInFilter {
         // This part get al the pixel values into the pixel [ ] array via the Image Processor
         byte[] pixels = (byte[]) ip.getPixels();
     
-        int width = ip.getWidth();
-        
+        int width = ip.getWidth(); 
         
         floatWidth = r.x + r.width;
         floatHeight = r.y + r.height;
@@ -286,7 +285,6 @@ public class GLCM_Texture implements PlugInFilter {
             }
         }
         rt.setValue("Sum of all GLCM elements", row, suma);
-        rt.show("Results");
         
         
         //=====================================================================================================
@@ -299,6 +297,7 @@ public class GLCM_Texture implements PlugInFilter {
                     lre = lre + ((b * b * glcm[a][b]) / glcm[a][b]);
                 }
             }
+            System.out.printf("Long Run Emphasis: %f", lre);
             rt.setValue("Long Run Emphasis", row, lre);
         }
         
@@ -310,6 +309,7 @@ public class GLCM_Texture implements PlugInFilter {
                     gld = gld + (a * (b * glcm[a][b] * glcm[a][b])) / glcm[a][b];
                 }
             }
+            System.out.printf("Gray Level Distribution: %f", gld);
             rt.setValue("Gray Level Distribution", row, gld);
         }
         
@@ -321,6 +321,8 @@ public class GLCM_Texture implements PlugInFilter {
                     rld = rld + (b * (a * glcm[a][b] * glcm[a][b])) / glcm[a][b];  
                 }
             }
+            System.out.printf("Run Length Distribution: %f", rld);
+                    
             rt.setValue("Run Length Distribution", row, rld);
         }
 
@@ -329,11 +331,15 @@ public class GLCM_Texture implements PlugInFilter {
             double rp = 0.0;
             for (a = 0; a < floatWidth; a++) {
                 for (b = 0; b < floatHeight; b++) {
-                    rp = rp + (glcm[a][b]/(a*b));
+                    rp = rp + (glcm[a][b]/(a*b)*(a*b));
                 }
             }
+            System.out.printf("Run Percentage: %f", rp);
             rt.setValue("Run Percentage", row, rp);
         }
+
+        rt.show("Results");
+
 //===============================================================================================
         //TextWindow tw = new TextWindow("Haralick's texture features   ", "", 400, 200);
 	//tw.append("  ");
@@ -341,21 +347,12 @@ public class GLCM_Texture implements PlugInFilter {
 	//tw.append ( "Selected Step   " + selectedStep);
 	//tw.append ("Size of the step   "+ step);
 	//tw.append ("3 a la quinta   "+ Math.pow(3,5));
-        
-        
+       
             TextureFP = new FloatProcessor(glcm);
             imp1 = new ImagePlus("Gray Level Cooccurance Matrix - Texture Measure", TextureFP);
             iconv = new ImageConverter(imp1);
             iconv.convertToGray8();
-            imp1.show();
-            
-        
-        
-        
-        // Include Run Length Distribution, gray level Distribution, Run Percentage,
-        // Long Run Emphasis --- from Landgrebe Slides.
-   
-        
+            imp1.show();        
     }
 
     
