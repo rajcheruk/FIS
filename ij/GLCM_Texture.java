@@ -11,7 +11,6 @@
 //			   grey level co-ocurrence matrix
 //	 		   Changes were made also in the Correlation parameter. Now this parameter is calculated according to Walker's paper
 //=====================================================
-
 package ij;
 
 //===========imports===================================
@@ -81,7 +80,7 @@ public class GLCM_Texture implements PlugInFilter {
         // The varialbe b holds the value of the pixel which is the neighbor to the  pixel where the Image Processor is sitting its attention
         int a;
         int b;
-        float pixelCounter = 0;
+        double pixelCounter = 0;
 
         //====================================================================================================
         // This part computes the Gray Level Correlation Matrix based in the step selected by the user
@@ -182,6 +181,7 @@ public class GLCM_Texture implements PlugInFilter {
 
         rt.incrementCounter();
         int row = rt.getCounter() - 1;
+        
 //=====================================================================================================
 // This part calculates the angular second moment; the value is stored in asm
 
@@ -262,8 +262,7 @@ public class GLCM_Texture implements PlugInFilter {
 
         }
 
-//===============================================================================================
-// This part calculates the entropy
+        // This part calculates the entropy
         if (doIcalculateEntropy == true) {
             double entropy = 0.0;
             for (a = 0; a < floatWidth; a++) {
@@ -278,26 +277,18 @@ public class GLCM_Texture implements PlugInFilter {
 
         }
 
-        double suma = 0.0;
-        for (a = 0; a < floatWidth; a++) {
-            for (b = 0; b < floatHeight; b++) {
-                suma = suma + glcm[a][b];
-            }
-        }
-        rt.setValue("Sum of all GLCM elements", row, suma);
-        
-        
-        //=====================================================================================================
-        // This part calculates the Long Run Emphasis - LRE
-
+        // Calculate Long Run Emphasis from Paper by Landgrebe 
+        // Provide citations
         if (doIcalculateLRE == true) {
             double lre = 0.0;
             for (a = 0; a < floatWidth; a++) {
                 for (b = 0; b < floatHeight; b++) {
-                    lre = lre + ((b * b * glcm[a][b]) / glcm[a][b]);
-                }
+                    if (glcm[a][b] == 0) {
+                    } else {
+                       lre = lre + ((b * b * (glcm[a][b])) / glcm[a][b]);
+                    }
+               }
             }
-            System.out.printf("Long Run Emphasis: %f", lre);
             rt.setValue("Long Run Emphasis", row, lre);
         }
         
@@ -306,10 +297,13 @@ public class GLCM_Texture implements PlugInFilter {
             double gld = 0.0;
             for (a = 0; a < floatWidth; a++) {
                 for (b = 0; b < floatHeight; b++) {
+                    if (glcm[a][b] == 0) {
+                    }
+                    else {
                     gld = gld + (a * (b * glcm[a][b] * glcm[a][b])) / glcm[a][b];
+                    }
                 }
             }
-            System.out.printf("Gray Level Distribution: %f", gld);
             rt.setValue("Gray Level Distribution", row, gld);
         }
         
@@ -318,11 +312,12 @@ public class GLCM_Texture implements PlugInFilter {
             double rld = 0.0;
             for (a = 0; a < floatWidth; a++) {
                 for (b = 0; b < floatHeight; b++) {
-                    rld = rld + (b * (a * glcm[a][b] * glcm[a][b])) / glcm[a][b];  
+                    if (glcm[a][b] == 0) {
+                    } else {
+                        rld = rld + (b * (a * glcm[a][b] * glcm[a][b])) / glcm[a][b];  
+                    }
                 }
             }
-            System.out.printf("Run Length Distribution: %f", rld);
-                    
             rt.setValue("Run Length Distribution", row, rld);
         }
 
@@ -331,12 +326,28 @@ public class GLCM_Texture implements PlugInFilter {
             double rp = 0.0;
             for (a = 0; a < floatWidth; a++) {
                 for (b = 0; b < floatHeight; b++) {
-                    rp = rp + (glcm[a][b]/(a*b)*(a*b));
+                    if (glcm[a][b] == 0) {
+                    } else {
+                     rp = rp + (glcm[a][b] / (a * b) * (a * b));
+                    }
                 }
             }
-            System.out.printf("Run Percentage: %f", rp);
             rt.setValue("Run Percentage", row, rp);
         }
+            
+            
+        //double suma = 0.0;
+        //for (a = 0; a < floatWidth; a++) {
+        //    for (b = 0; b < floatHeight; b++) {
+        //        suma = suma + glcm[a][b];
+        //    }
+        //}
+        //rt.setValue("Sum of all GLCM elements", row, suma);
+        
+        
+        //=====================================================================================================
+        // This part calculates the Long Run Emphasis - LRE
+        
 
         rt.show("Results");
 
