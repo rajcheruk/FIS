@@ -296,7 +296,7 @@ public class GLCM_Texture implements PlugInFilter {
             double lre = 0.0;
             for (a = 0; a < floatWidth; a++) {
                 for (b = 0; b < floatHeight; b++) {
-                    lre = lre + (glcm[a][b] * glcm[a][b]);
+                    lre = lre + ((b * b * glcm[a][b]) / glcm[a][b]);
                 }
             }
             rt.setValue("Long Run Emphasis", row, lre);
@@ -307,7 +307,7 @@ public class GLCM_Texture implements PlugInFilter {
             double gld = 0.0;
             for (a = 0; a < floatWidth; a++) {
                 for (b = 0; b < floatHeight; b++) {
-                    gld = gld + (glcm[a][b] * glcm[a][b]);
+                    gld = gld + (a * (b * glcm[a][b] * glcm[a][b])) / glcm[a][b];
                 }
             }
             rt.setValue("Gray Level Distribution", row, gld);
@@ -318,7 +318,7 @@ public class GLCM_Texture implements PlugInFilter {
             double rld = 0.0;
             for (a = 0; a < floatWidth; a++) {
                 for (b = 0; b < floatHeight; b++) {
-                    rld = rld + (glcm[a][b] * glcm[a][b]);
+                    rld = rld + (b * (a * glcm[a][b] * glcm[a][b])) / glcm[a][b];  
                 }
             }
             rt.setValue("Run Length Distribution", row, rld);
@@ -329,7 +329,7 @@ public class GLCM_Texture implements PlugInFilter {
             double rp = 0.0;
             for (a = 0; a < floatWidth; a++) {
                 for (b = 0; b < floatHeight; b++) {
-                    rp = rp + (glcm[a][b] * glcm[a][b]);
+                    rp = rp + (glcm[a][b]/(a*b));
                 }
             }
             rt.setValue("Run Percentage", row, rp);
