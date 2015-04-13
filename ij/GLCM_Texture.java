@@ -171,8 +171,8 @@ public class GLCM_Texture implements PlugInFilter {
 
 // This part divides each member of the glcm matrix by the number of pixels. The number of pixels was stored in the pixelCounter variable
 // The number of pixels is used as a normalizing constant
-        for (a = 0; a < floatWidth; a++) {
-            for (b = 0; b < floatHeight; b++) {
+        for (a = 1; a < floatWidth; a++) {
+            for (b = 1; b < floatHeight; b++) {
                 //glcm[a][b]= Float.intBitsToFloat((int) (glcm[a][b] / pixelCounter));
                 glcm[a][b] = (float) ((glcm[a][b]) / (pixelCounter));
                 //System.out.printf("%d %d %f %n", a, b, glcm[a][b]);
@@ -187,8 +187,8 @@ public class GLCM_Texture implements PlugInFilter {
 
         if (doIcalculateASM == true) {
             double asm = 0.0;
-            for (a = 0; a < floatWidth; a++) {
-                for (b = 0; b < floatHeight; b++) {
+            for (a = 1; a < floatWidth; a++) {
+                for (b = 1; b < floatHeight; b++) {
                     asm = asm + (glcm[a][b] * glcm[a][b]);
                 }
             }
@@ -199,8 +199,8 @@ public class GLCM_Texture implements PlugInFilter {
 // This part calculates the contrast; the value is stored in contrast
         if (doIcalculateContrast == true) {
             double contrast = 0.0;
-            for (a = 0; a < floatWidth; a++) {
-                for (b = 0; b < floatHeight; b++) {
+            for (a = 1; a < floatWidth-1; a++) {
+                for (b = 1; b < floatHeight-1; b++) {
                     contrast = contrast + (a - b) * (a - b) * (glcm[a][b]);
                 }
             }
@@ -223,8 +223,8 @@ public class GLCM_Texture implements PlugInFilter {
             double stdevx = 0.0;
             double stdevy = 0.0;
 
-            for (a = 0; a < floatWidth; a++) {
-                for (b = 0; b < floatHeight; b++) {
+            for (a = 1; a < floatWidth; a++) {
+                for (b = 1; b < floatHeight; b++) {
                     px = px + a * glcm[a][b];
                     py = py + b * glcm[a][b];
 
@@ -232,16 +232,16 @@ public class GLCM_Texture implements PlugInFilter {
             }
 
 // Now calculate the standard deviations
-            for (a = 0; a < floatWidth; a++) {
-                for (b = 0; b < floatHeight; b++) {
+            for (a = 1; a < floatWidth; a++) {
+                for (b = 1; b < floatHeight; b++) {
                     stdevx = stdevx + (a - px) * (a - px) * glcm[a][b];
                     stdevy = stdevy + (b - py) * (b - py) * glcm[a][b];
                 }
             }
 
 // Now finally calculate the correlation parameter
-            for (a = 0; a < floatWidth; a++) {
-                for (b = 0; b < floatHeight; b++) {
+            for (a = 1; a < floatWidth; a++) {
+                for (b = 1; b < floatHeight; b++) {
                     correlation = correlation + ((a - px) * (b - py) * glcm[a][b] / (stdevx * stdevy));
                 }
             }
@@ -253,8 +253,8 @@ public class GLCM_Texture implements PlugInFilter {
 
         if (doIcalculateIDM == true) {
             double IDM = 0.0;
-            for (a = 0; a < floatWidth; a++) {
-                for (b = 0; b < floatHeight; b++) {
+            for (a = 1; a < floatWidth; a++) {
+                for (b = 1; b < floatHeight; b++) {
                     IDM = IDM + (glcm[a][b] / (1 + (a - b) * (a - b)));
                 }
             }
@@ -265,8 +265,8 @@ public class GLCM_Texture implements PlugInFilter {
         // This part calculates the entropy
         if (doIcalculateEntropy == true) {
             double entropy = 0.0;
-            for (a = 0; a < floatWidth; a++) {
-                for (b = 0; b < floatHeight; b++) {
+            for (a = 1; a < floatWidth; a++) {
+                for (b = 1; b < floatHeight; b++) {
                     if (glcm[a][b] == 0) {
                     } else {
                         entropy = entropy - (glcm[a][b] * (Math.log(glcm[a][b])));
@@ -281,8 +281,8 @@ public class GLCM_Texture implements PlugInFilter {
         // Provide citations
         if (doIcalculateLRE == true) {
             double lre = 0.0;
-            for (a = 0; a < floatWidth; a++) {
-                for (b = 0; b < floatHeight; b++) {
+            for (a = 1; a < floatWidth; a++) {
+                for (b = 1; b < floatHeight; b++) {
                     if (glcm[a][b] == 0) {
                     } else {
                        lre = lre + ((b * b * (glcm[a][b])) / glcm[a][b]);
@@ -295,8 +295,8 @@ public class GLCM_Texture implements PlugInFilter {
         // Gray Level Distribution - GLD
         if (doIcalculateGLD == true) {
             double gld = 0.0;
-            for (a = 0; a < floatWidth; a++) {
-                for (b = 0; b < floatHeight; b++) {
+            for (a = 1; a < floatWidth; a++) {
+                for (b = 1; b < floatHeight; b++) {
                     if (glcm[a][b] == 0) {
                     }
                     else {
@@ -310,8 +310,8 @@ public class GLCM_Texture implements PlugInFilter {
         // Run Length Distribution - RLD
         if (doIcalculateRLD == true) {
             double rld = 0.0;
-            for (a = 0; a < floatWidth; a++) {
-                for (b = 0; b < floatHeight; b++) {
+            for (a = 1; a < floatWidth; a++) {
+                for (b = 1; b < floatHeight; b++) {
                     if (glcm[a][b] == 0) {
                     } else {
                         rld = rld + (b * (a * glcm[a][b] * glcm[a][b])) / glcm[a][b];  
@@ -324,8 +324,8 @@ public class GLCM_Texture implements PlugInFilter {
         // Run Percentage - RP
         if (doIcalculateRP == true) {
             double rp = 0.0;
-            for (a = 0; a < floatWidth; a++) {
-                for (b = 0; b < floatHeight; b++) {
+            for (a = 1; a < floatWidth; a++) {
+                for (b = 1; b < floatHeight; b++) {
                     if (glcm[a][b] == 0) {
                     } else {
                      rp = rp + (glcm[a][b] / (a * b) * (a * b));
@@ -336,18 +336,13 @@ public class GLCM_Texture implements PlugInFilter {
         }
             
             
-        //double suma = 0.0;
-        //for (a = 0; a < floatWidth; a++) {
-        //    for (b = 0; b < floatHeight; b++) {
-        //        suma = suma + glcm[a][b];
-        //    }
-        //}
-        //rt.setValue("Sum of all GLCM elements", row, suma);
-        
-        
-        //=====================================================================================================
-        // This part calculates the Long Run Emphasis - LRE
-        
+        double suma = 0.0;
+        for (a = 1; a < floatWidth; a++) {
+            for (b = 1; b < floatHeight; b++) {
+                suma = suma + glcm[a][b];
+            }
+        }
+        rt.setValue("Sum of all GLCM elements", row, suma);
 
         rt.show("Results");
 
@@ -359,11 +354,11 @@ public class GLCM_Texture implements PlugInFilter {
 	//tw.append ("Size of the step   "+ step);
 	//tw.append ("3 a la quinta   "+ Math.pow(3,5));
        
-            TextureFP = new FloatProcessor(glcm);
-            imp1 = new ImagePlus("Gray Level Cooccurance Matrix - Texture Measure", TextureFP);
-            iconv = new ImageConverter(imp1);
-            iconv.convertToGray8();
-            imp1.show();        
+        TextureFP = new FloatProcessor(glcm);
+        imp1 = new ImagePlus("Gray Level Cooccurance Matrix - Texture Measure", TextureFP);
+        iconv = new ImageConverter(imp1);
+        iconv.convertToGray8();
+        imp1.show();        
     }
 
     
